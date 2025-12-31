@@ -58,3 +58,20 @@ def patch_user(user_id):
         user['lastname'] = data['lastname']
 
     return "", 204
+
+@app.route('/users/<int:user_id>', methods=['PUT'])
+def put_user(user_id):
+    data = request.get_json(silent=True)
+    if not data or 'name' not in data or 'lastname' not in data:
+        return "", 400
+
+    if user_id in users:
+        users[user_id]['name'] = data['name']
+        users[user_id]['lastname'] = data['lastname']
+    else:
+        users[user_id] = {
+            "id": user_id,
+            "name": data['name'],
+            "lastname": data['lastname']
+        }
+    return "". 204
