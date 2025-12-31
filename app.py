@@ -11,7 +11,7 @@ def get_first_free_id():
     for i, uid in enumerate(existing_ids, 1):
         if uid != i:
             return i 
-    return existing_ids[-1] +1
+    return existing_ids[-1] + 1
 
 @app.route('/users', methods=['GET'])
 def get_users():
@@ -65,13 +65,20 @@ def put_user(user_id):
     if not data or 'name' not in data or 'lastname' not in data:
         return "", 400
 
+    users[user_id] = {
+        "id": user_id,
+        "name": data['name'],
+        "lastname": data['lastname']
+    }
+    return "", 204
+
+@app.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
     if user_id in users:
-        users[user_id]['name'] = data['name']
-        users[user_id]['lastname'] = data['lastname']
+        del users[user_id]
+        return "", 204
     else:
-        users[user_id] = {
-            "id": user_id,
-            "name": data['name'],
-            "lastname": data['lastname']
-        }
-    return "". 204
+        return "", 400
+    
+if __name__ == '__main__':
+    app.run(debug=True)
