@@ -23,3 +23,18 @@ def get_user(user_id):
     if user:
         return jsonify(user), 200
     return "", 404
+
+@app.route('/users', methods=['POST'])
+def create_user():
+    data = request.get_json(silent=True)
+    if not data or 'name' not in data or 'lastname' not in data:
+        return "", 400
+    
+    new_id = get_first_free_id()
+    new_user = {
+        "id": new_id,
+        "name": data['name'],
+        "lastname": data['lastname']
+    }
+    users[new_id] = new_user
+    return "", 201
