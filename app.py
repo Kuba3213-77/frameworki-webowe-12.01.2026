@@ -38,3 +38,23 @@ def create_user():
     }
     users[new_id] = new_user
     return "", 201
+
+@app.route('/users/<int:user_id>', methods=['PATCH'])
+def patch_user(user_id):
+    if user_id not in users:
+        return "", 400
+
+    data = request.get_json(silent=True)
+    if not data:
+        return "", 400
+    
+    if not any(key in data for key in ['name', 'lastname']):
+        return "", 400
+
+    user = users[user_id]
+    if 'name' in data:
+        user['name'] = data['name']
+    if 'lastname' in data:
+        user['lastname'] = data['lastname']
+
+    return "", 204
