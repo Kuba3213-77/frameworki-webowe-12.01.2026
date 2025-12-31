@@ -1,16 +1,14 @@
-from flask import json
-from app import app
 
 def test_get_users(client):
     response = client.get('/users')
     assert response.status_code == 200
-    assert isinstance(json.loads(response.data), list)
+    assert isinstance(response.get_json(), list)
 
 def test_get_user(client):
     client.post('/users', json={"name": "Wojciech", "lastname": "Oczkowski"})
     response = client.get('/users/1')
     assert response.status_code == 200
-    assert json.loads(response.data) == {"id": 1, "name": "Wojciech", "lastname": "Oczkowski"}
+    assert response.get_json() == {"id": 1, "name": "Wojciech", "lastname": "Oczkowski"}
 
 def test_create_user(client):
     response = client.post('/users', json={"name": "Wojciech", "lastname": "Oczkowski"})
@@ -21,14 +19,14 @@ def test_patch_user(client):
     response = client.patch('/users/1', json={"name": "Jan"})
     assert response.status_code == 204
     response = client.get('/users/1')
-    assert json.loads(response.data) == {"id": 1, "name": "Jan", "lastname": "Oczkowski"}
+    assert response.get_json() == {"id": 1, "name": "Jan", "lastname": "Oczkowski"}
 
 def test_put_user(client):
     client.post('/users', json={"name": "Wojciech", "lastname": "Oczkowski"})
     response = client.put('/users/1', json={"name": "Jan", "lastname": "Kowalski"})
     assert response.status_code == 204
     response = client.get('/users/1')
-    assert json.loads(response.data) == {"id": 1, "name": "Jan", "lastname": "Kowalski"}
+    assert response.get_json() == {"id": 1, "name": "Jan", "lastname": "Kowalski"}
 
 def test_delete_user(client):
     client.post('/users', json={"name": "Wojciech", "lastname": "Oczkowski"})

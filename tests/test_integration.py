@@ -1,57 +1,49 @@
-from flask import Flask, jsonify
 import unittest
-import json
+from app import app, users
 
 class UserManagementIntegrationTest(unittest.TestCase):
     def setUp(self):
-        self.app = Flask(__name__)
+        self.app = app
         self.app.config['TESTING'] = True
         self.client = self.app.test_client()
+        users.clear()
 
     def test_create_user(self):
         response = self.client.post('/users', 
-                                     data=json.dumps({"name": "Wojciech", "lastname": "Oczkowski"}), 
-                                     content_type='application/json')
+                                     json={"name": "Wojciech", "lastname": "Oczkowski"})
         self.assertEqual(response.status_code, 201)
 
     def test_get_users(self):
         self.client.post('/users', 
-                         data=json.dumps({"name": "Wojciech", "lastname": "Oczkowski"}), 
-                         content_type='application/json')
+                         json={"name": "Wojciech", "lastname": "Oczkowski"})
         response = self.client.get('/users')
         self.assertEqual(response.status_code, 200)
         self.assertIn("Wojciech", str(response.data))
 
     def test_get_user(self):
         self.client.post('/users', 
-                         data=json.dumps({"name": "Wojciech", "lastname": "Oczkowski"}), 
-                         content_type='application/json')
+                         json={"name": "Wojciech", "lastname": "Oczkowski"})
         response = self.client.get('/users/1')
         self.assertEqual(response.status_code, 200)
         self.assertIn("Oczkowski", str(response.data))
 
     def test_patch_user(self):
         self.client.post('/users', 
-                         data=json.dumps({"name": "Wojciech", "lastname": "Oczkowski"}), 
-                         content_type='application/json')
+                         json={"name": "Wojciech", "lastname": "Oczkowski"})
         response = self.client.patch('/users/1', 
-                                      data=json.dumps({"name": "Jan"}), 
-                                      content_type='application/json')
+                                      json={"name": "Jan"})
         self.assertEqual(response.status_code, 204)
 
     def test_put_user(self):
         self.client.post('/users', 
-                         data=json.dumps({"name": "Wojciech", "lastname": "Oczkowski"}), 
-                         content_type='application/json')
+                         json={"name": "Wojciech", "lastname": "Oczkowski"})
         response = self.client.put('/users/1', 
-                                    data=json.dumps({"name": "Jan", "lastname": "Kowalski"}), 
-                                    content_type='application/json')
+                                    json={"name": "Jan", "lastname": "Kowalski"})
         self.assertEqual(response.status_code, 204)
 
     def test_delete_user(self):
         self.client.post('/users', 
-                         data=json.dumps({"name": "Wojciech", "lastname": "Oczkowski"}), 
-                         content_type='application/json')
+                         json={"name": "Wojciech", "lastname": "Oczkowski"})
         response = self.client.delete('/users/1')
         self.assertEqual(response.status_code, 204)
 
